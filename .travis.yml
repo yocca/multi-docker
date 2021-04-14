@@ -1,0 +1,15 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t yocca/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true yocca/react-test npm test
+
+after_success:
+  - docker build -t yocca/multi-client ./client
+  - docker build -t yocca/multi-nginx ./nginx
+  - docker build -t yocca/multi-server ./server
+  - docker build -t yocca/multi-worker ./worker
