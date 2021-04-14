@@ -3,13 +3,18 @@ services:
   - docker
 
 before_install:
-  - docker build -t yocca/react-test -f ./client/Dockerfile.dev ./client
+  - docker build -t ayocca/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run -e CI=true yocca/react-test npm test
+  - docker run -e CI=true ayocca/react-test npm test
 
 after_success:
-  - docker build -t yocca/multi-client ./client
-  - docker build -t yocca/multi-nginx ./nginx
-  - docker build -t yocca/multi-server ./server
-  - docker build -t yocca/multi-worker ./worker
+  - docker build -t ayocca/multi-client ./client
+  - docker build -t ayocca/multi-nginx ./nginx
+  - docker build -t ayocca/multi-server ./server
+  - docker build -t ayocca/multi-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push ayocca/multi-client
+  - docker push ayocca/multi-nginx
+  - docker push ayocca/multi-server
+  - docker push ayocca/multi-worker
